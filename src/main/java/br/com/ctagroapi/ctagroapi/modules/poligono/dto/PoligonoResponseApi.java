@@ -10,6 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Data
 @Slf4j
@@ -23,7 +26,7 @@ public class PoligonoResponseApi {
     private String userId;
     private String name;
     private Object geoJson;
-    private String center;
+    private List<Double> center;
     private Double area;
     private LocalDateTime createdAt;
 
@@ -36,6 +39,17 @@ public class PoligonoResponseApi {
         } catch (Exception ex) {
             log.error(ex.getMessage());
         }
+        response.setCenter(getCenterList(poligono.getCenter()));
         return response;
+    }
+
+    private static List<Double> getCenterList(String centerString) {
+        centerString = centerString.replace("[", "").replace("]", "").replace(" ", "");
+        var centerArray = centerString.split(",");
+        var list = new ArrayList<Double>();
+        for (int i = 0; i < centerArray.length; i++) {
+            list.add(Double.parseDouble(centerArray[i]));
+        }
+        return list;
     }
 }
