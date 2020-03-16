@@ -1,21 +1,24 @@
 package br.com.ctagroapi.ctagroapi.modules.poligono.model;
 
-import br.com.ctagroapi.ctagroapi.modules.poligono.dto.PoligonoRequest;
+import br.com.ctagroapi.ctagroapi.modules.poligono.dto.PoligonoResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
+@Slf4j
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "POLIGONO")
+@SuppressWarnings("MemberName")
 public class Poligono {
 
     @Id
@@ -48,9 +51,26 @@ public class Poligono {
         createdAt = LocalDateTime.now();
     }
 
-    public static Poligono of(PoligonoRequest request) {
-        var poligono = new Poligono();
-        BeanUtils.copyProperties(request, poligono);
-        return poligono;
+    public Poligono(Integer id) {
+        this.id = id;
+    }
+
+    public static Poligono of(PoligonoResponse response) {
+        var mapper = new ObjectMapper();
+        var stringJson = "";
+        try {
+            stringJson = mapper.writeValueAsString(response.getGeo_json());
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+        }
+        return Poligono
+            .builder()
+            .poligonoId(response.getId())
+            .userId(response.getUser_id())
+            .name(response.getName())
+            .geoJson(stringJson)
+            .area(response.getArea())
+            .center(response.getCenter().toString())
+            .build();
     }
 }

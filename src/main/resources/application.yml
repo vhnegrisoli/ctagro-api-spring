@@ -4,8 +4,8 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-#    jdbc-url: jdbc:postgresql://sqlvhnegrisoli.ddns.net:5432/ctagro
-    jdbc-url: jdbc:postgresql://localhost:5432/ctagro
+    jdbc-url: jdbc:postgresql://sqlvhnegrisoli.ddns.net:5432/ctagro
+#    jdbc-url: jdbc:postgresql://localhost:5432/ctagro
     username: postgres
     password: 1y5h8j
     initialization-mode: always
@@ -35,9 +35,10 @@ app-config:
   integracao:
     poligono:
       url: http://api.agromonitoring.com/agro/1.0/polygons?appid=${app-config.agromonitoring_api_key}
-    forecast:
-      url: http://api.agromonitoring.com/agro/1.0/weather/forecast?polyid=
-    current:
-      url: http://api.agromonitoring.com/agro/1.0/weather?polyid=
-    historico:
-      url: http://api.agromonitoring.com/agro/1.0/weather/history?polyid=
+    previsao:
+      url: http://api.agromonitoring.com/agro/1.0/weather/
+#      url: http://api.agromonitoring.com/agro/1.0/weather/forecast?polyid=
+#    current:
+#      url: http://api.agromonitoring.com/agro/1.0/weather?polyid=
+#    historico:
+#      url: http://api.agromonitoring.com/agro/1.0/weather/history?polyid=

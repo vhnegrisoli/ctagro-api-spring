@@ -11,8 +11,13 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Geometry {
+@SuppressWarnings("MemberName")
+public class PoligonoResponse {
 
-    private String type;
-    private List<List<List<Double>>> coordinates;
+    private String id;
+    private GeoJson geo_json;
+    private String user_id;
+    private String name;
+    private List<Double> center;
+    private Double area;
 }
