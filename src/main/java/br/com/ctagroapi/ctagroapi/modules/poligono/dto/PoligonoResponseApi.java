@@ -1,7 +1,6 @@
 package br.com.ctagroapi.ctagroapi.modules.poligono.dto;
 
 import br.com.ctagroapi.ctagroapi.modules.poligono.model.Poligono;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +11,8 @@ import org.springframework.beans.BeanUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.ctagroapi.ctagroapi.modules.comum.utils.JsonUtils.stringJsonToObject;
 
 @Data
 @Slf4j
@@ -32,12 +33,7 @@ public class PoligonoResponseApi {
     public static PoligonoResponseApi of(Poligono poligono) {
         var response = new PoligonoResponseApi();
         BeanUtils.copyProperties(poligono, response);
-        var mapper = new ObjectMapper();
-        try {
-            response.setGeoJson(mapper.readValue(poligono.getGeoJson(), Object.class));
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-        }
+        response.setGeoJson(stringJsonToObject(poligono.getGeoJson()));
         response.setCenter(getCenterList(poligono.getCenter()));
         return response;
     }

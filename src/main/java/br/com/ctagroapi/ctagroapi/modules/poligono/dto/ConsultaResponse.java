@@ -2,12 +2,13 @@ package br.com.ctagroapi.ctagroapi.modules.poligono.dto;
 
 import br.com.ctagroapi.ctagroapi.modules.poligono.enums.ETipoConsulta;
 import br.com.ctagroapi.ctagroapi.modules.poligono.model.Consultas;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import static br.com.ctagroapi.ctagroapi.modules.comum.utils.JsonUtils.stringJsonToObject;
 
 @Data
 @Slf4j
@@ -22,19 +23,12 @@ public class ConsultaResponse {
     private Object consulta;
 
     public static ConsultaResponse of(Consultas consultas) {
-        var mapper = new ObjectMapper();
-        var json = new Object();
-        try {
-            json = mapper.readValue(consultas.getConsultaJson(), Object.class);
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-        }
         return ConsultaResponse
             .builder()
             .id(consultas.getId())
             .tipoConsulta(consultas.getTipoConsulta())
             .poligono(PoligonoResponseApi.of(consultas.getPoligono()))
-            .consulta(json)
+            .consulta(stringJsonToObject(consultas.getConsultaJson()))
             .build();
     }
 }

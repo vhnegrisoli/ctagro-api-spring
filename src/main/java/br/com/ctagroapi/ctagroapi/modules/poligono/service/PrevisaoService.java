@@ -3,9 +3,7 @@ package br.com.ctagroapi.ctagroapi.modules.poligono.service;
 import br.com.ctagroapi.ctagroapi.modules.poligono.client.PrevisaoClient;
 import br.com.ctagroapi.ctagroapi.modules.poligono.dto.ConsultaResponse;
 import br.com.ctagroapi.ctagroapi.modules.poligono.model.Consultas;
-import br.com.ctagroapi.ctagroapi.modules.poligono.model.Poligono;
 import br.com.ctagroapi.ctagroapi.modules.poligono.repository.ConsultasRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static br.com.ctagroapi.ctagroapi.modules.comum.utils.JsonUtils.jsonObjectToString;
 import static br.com.ctagroapi.ctagroapi.modules.poligono.enums.ETipoConsulta.*;
 
 @Slf4j
@@ -32,48 +31,22 @@ public class PrevisaoService {
     public Object buscarPrevisaoAtual(String polyid) {
         var poligono = poligonoService.buscarPoligonoPorIdDoPoligono(polyid);
         var consultaAtual = previsaoClient.buscarPrevisaoAtual(polyid, apiKey);
-        consultasRepository.save(Consultas
-            .builder()
-            .tipoConsulta(ATUAL)
-            .consultaJson(getJsonString(consultaAtual))
-            .poligono(new Poligono(poligono.getId()))
-            .build());
+        consultasRepository.save(Consultas.of(poligono.getId(), ATUAL, jsonObjectToString(consultaAtual)));
         return consultaAtual;
     }
 
     public Object buscarPrevisaoComForecast(String polyid) {
         var poligono = poligonoService.buscarPoligonoPorIdDoPoligono(polyid);
         var consultaForecast = previsaoClient.buscarPrevisaoComForecast(polyid, apiKey);
-        consultasRepository.save(Consultas
-            .builder()
-            .tipoConsulta(FORECAST)
-            .consultaJson(getJsonString(consultaForecast))
-            .poligono(new Poligono(poligono.getId()))
-            .build());
+        consultasRepository.save(Consultas.of(poligono.getId(), FORECAST, jsonObjectToString(consultaForecast)));
         return consultaForecast;
     }
 
     public Object buscarPrevisaoHistorica(String polyid, String start, String end) {
         var poligono = poligonoService.buscarPoligonoPorIdDoPoligono(polyid);
         var consultaHistorica = previsaoClient.buscarPrevisaoHistorica(polyid, apiKey, start, end);
-        consultasRepository.save(Consultas
-            .builder()
-            .tipoConsulta(HISTORICO)
-            .consultaJson(getJsonString(consultaHistorica))
-            .poligono(new Poligono(poligono.getId()))
-            .build());
+        consultasRepository.save(Consultas.of(poligono.getId(), HISTORICO, jsonObjectToString(consultaHistorica)));
         return consultaHistorica;
-    }
-
-    private String getJsonString(Object json) {
-        var mapper = new ObjectMapper();
-        var jsonString = "";
-        try {
-            jsonString = mapper.writeValueAsString(json);
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-        }
-        return jsonString;
     }
 
     public List<ConsultaResponse> buscarConsultasPorPoligono(Integer poligonoId) {

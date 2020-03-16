@@ -25,7 +25,7 @@ public class Consultas {
     @JoinColumn(name = "FK_POLIGONO", nullable = false)
     private Poligono poligono;
 
-    @Column(name = "CONSULTA_JSON", nullable = false, length = 2000)
+    @Column(name = "CONSULTA_JSON", nullable = false, length = 20000)
     private String consultaJson;
 
     @Column(name = "TIPO_CONSULTA", nullable = false)
@@ -38,5 +38,14 @@ public class Consultas {
     @PrePersist
     public void prePersist() {
         dataCadastro = LocalDateTime.now();
+    }
+
+    public static Consultas of(Integer poligonoId, ETipoConsulta tipoConsulta, String consultaJson) {
+        return Consultas
+            .builder()
+            .tipoConsulta(tipoConsulta)
+            .consultaJson(consultaJson)
+            .poligono(new Poligono(poligonoId))
+            .build();
     }
 }
