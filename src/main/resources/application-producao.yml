@@ -4,10 +4,9 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://sqlvhnegrisoli.ddns.net:5432/ctagro
-#    jdbc-url: jdbc:postgresql://localhost:5432/ctagro
-    username: postgres
-    password: 1y5h8j
+    jdbc-url: jdbc:postgresql://ec2-23-22-156-110.compute-1.amazonaws.com:5432/d8frvclajntbpq
+    username: uwltyvxxxnqfky
+    password: 956bcfa743a877b460ef637b80cdf2d1215f5c2d912e7e3b9945889214589838
     initialization-mode: always
     initialize: true
     continue-on-error: true
