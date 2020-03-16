@@ -1,0 +1,43 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+#    jdbc-url: jdbc:postgresql://sqlvhnegrisoli.ddns.net:5432/ctagro
+    jdbc-url: jdbc:postgresql://localhost:5432/ctagro
+    username: postgres
+    password: 1y5h8j
+    initialization-mode: always
+    initialize: true
+    continue-on-error: true
+    platform: postgresql
+
+  jackson:
+    time-zone: America/Sao_Paulo
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+      format_sql: true
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL9Dialect
+        jdbc:
+          lob.non_contextual_creation: true
+
+server:
+  port: 8092
+
+app-config:
+  agromonitoring_api_key: ae32b9044d0336489e22e887fb4e4f43
+  integracao:
+    poligono:
+      url: http://api.agromonitoring.com/agro/1.0/polygons?appid=${app-config.agromonitoring_api_key}
+    forecast:
+      url: http://api.agromonitoring.com/agro/1.0/weather/forecast?polyid=
+    current:
+      url: http://api.agromonitoring.com/agro/1.0/weather?polyid=
+    historico:
+      url: http://api.agromonitoring.com/agro/1.0/weather/history?polyid=
