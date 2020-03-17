@@ -22,7 +22,12 @@ public class ConsultaController {
         return previsaoService.buscarConsultasRealizadas();
     }
 
-    @GetMapping("{poligonoId}")
+    @GetMapping("{id}")
+    public ConsultaResponse buscarConsultaPorId(@PathVariable Integer id) {
+        return previsaoService.buscarConsultaPorId(id);
+    }
+
+    @GetMapping("poligono/{poligonoId}")
     public List<ConsultaResponse> buscarTodasPorPoligono(@PathVariable Integer poligonoId) {
         return previsaoService.buscarConsultasPorPoligono(poligonoId);
     }

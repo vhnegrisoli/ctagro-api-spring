@@ -1,7 +1,9 @@
 package br.com.ctagroapi.ctagroapi.modules.poligono.service;
 
+import br.com.ctagroapi.ctagroapi.modules.comum.exception.ValidacaoException;
 import br.com.ctagroapi.ctagroapi.modules.poligono.client.PrevisaoClient;
 import br.com.ctagroapi.ctagroapi.modules.poligono.dto.ConsultaResponse;
+import br.com.ctagroapi.ctagroapi.modules.poligono.dto.PrevisaoResponse;
 import br.com.ctagroapi.ctagroapi.modules.poligono.model.Consultas;
 import br.com.ctagroapi.ctagroapi.modules.poligono.repository.ConsultasRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -28,25 +30,28 @@ public class PrevisaoService {
     @Value("${app-config.agromonitoring_api_key}")
     private String apiKey;
 
-    public Object buscarPrevisaoAtual(String polyid) {
+    public PrevisaoResponse buscarPrevisaoAtual(String polyid) {
         var poligono = poligonoService.buscarPoligonoPorIdDoPoligono(polyid);
         var consultaAtual = previsaoClient.buscarPrevisaoAtual(polyid, apiKey);
-        consultasRepository.save(Consultas.of(poligono.getId(), ATUAL, jsonObjectToString(consultaAtual)));
-        return consultaAtual;
+        var jsonString = jsonObjectToString(consultaAtual);
+        consultasRepository.save(Consultas.of(poligono.getId(), ATUAL, jsonString));
+        return PrevisaoResponse.of(consultaAtual, ATUAL, jsonString);
     }
 
-    public Object buscarPrevisaoComForecast(String polyid) {
+    public PrevisaoResponse buscarPrevisaoComForecast(String polyid) {
         var poligono = poligonoService.buscarPoligonoPorIdDoPoligono(polyid);
         var consultaForecast = previsaoClient.buscarPrevisaoComForecast(polyid, apiKey);
-        consultasRepository.save(Consultas.of(poligono.getId(), FORECAST, jsonObjectToString(consultaForecast)));
-        return consultaForecast;
+        var jsonString = jsonObjectToString(consultaForecast);
+        consultasRepository.save(Consultas.of(poligono.getId(), FORECAST, jsonString));
+        return PrevisaoResponse.of(consultaForecast, FORECAST, jsonString);
     }
 
-    public Object buscarPrevisaoHistorica(String polyid, String start, String end) {
+    public PrevisaoResponse buscarPrevisaoHistorica(String polyid, String start, String end) {
         var poligono = poligonoService.buscarPoligonoPorIdDoPoligono(polyid);
         var consultaHistorica = previsaoClient.buscarPrevisaoHistorica(polyid, apiKey, start, end);
-        consultasRepository.save(Consultas.of(poligono.getId(), HISTORICO, jsonObjectToString(consultaHistorica)));
-        return consultaHistorica;
+        var jsonString = jsonObjectToString(consultaHistorica);
+        consultasRepository.save(Consultas.of(poligono.getId(), HISTORICO, jsonString));
+        return PrevisaoResponse.of(consultaHistorica, HISTORICO, jsonString);
     }
 
     public List<ConsultaResponse> buscarConsultasPorPoligono(Integer poligonoId) {
@@ -63,5 +68,10 @@ public class PrevisaoService {
             .stream()
             .map(ConsultaResponse::of)
             .collect(Collectors.toList());
+    }
+
+    public ConsultaResponse buscarConsultaPorId(Integer id) {
+        return ConsultaResponse.of(consultasRepository.findById(id)
+            .orElseThrow(() -> new ValidacaoException("A consulta não existe.")));
     }
 }

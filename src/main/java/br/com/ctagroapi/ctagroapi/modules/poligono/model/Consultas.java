@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,7 +26,8 @@ public class Consultas {
     @JoinColumn(name = "FK_POLIGONO", nullable = false)
     private Poligono poligono;
 
-    @Column(name = "CONSULTA_JSON", nullable = false, length = 20000)
+    @Type(type = "text")
+    @Column(name = "CONSULTA_JSON", nullable = false, length = 65535, columnDefinition = "TEXT")
     private String consultaJson;
 
     @Column(name = "TIPO_CONSULTA", nullable = false)
